@@ -6,6 +6,7 @@ import epw.minipos_api.Service.CustomerService;
 import epw.minipos_api.dto.CreateCustomerDto;
 import epw.minipos_api.dto.UpdateCustomerDto;
 import epw.minipos_api.exception.CustomerNotFoundException;
+import epw.minipos_api.exception.DuplicateCustomerEmailException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,9 +29,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer create(CreateCustomerDto dto) {
+        String normalizedEmail = dto.email().trim().toLowerCase();
+        if (customerRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+            throw new DuplicateCustomerEmailException(normalizedEmail);
+        }
+
         Customer customer = new Customer(
                 dto.fullName().trim(),
-                dto.email().trim().toLowerCase(),
+                normalizedEmail,
                 normalizePhone(dto.phone())
         );
         return customerRepository.save(customer);
@@ -44,7 +50,11 @@ public class CustomerServiceImpl implements CustomerService {
             current.setFullName(dto.fullName().trim());
         }
         if (dto.email() != null) {
-            current.setEmail(dto.email().trim().toLowerCase());
+            String normalizedEmail = dto.email().trim().toLowerCase();
+            if (customerRepository.existsByEmailIgnoreCaseAndIdNot(normalizedEmail, current.getId())) {
+                throw new DuplicateCustomerEmailException(normalizedEmail);
+            }
+            current.setEmail(normalizedEmail);
         }
         if (dto.phone() != null) {
             current.setPhone(normalizePhone(dto.phone()));

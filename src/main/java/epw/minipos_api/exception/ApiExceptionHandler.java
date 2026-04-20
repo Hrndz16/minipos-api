@@ -20,6 +20,11 @@ public class ApiExceptionHandler {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(DuplicateCustomerEmailException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateCustomerEmail(DuplicateCustomerEmailException ex) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> fields = ex.getBindingResult()
