@@ -84,4 +84,23 @@ class MiniposApiApplicationTests {
                 .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.message").value("A customer with email '" + email + "' already exists"));
     }
+
+    @Test
+    void shouldReturnAdminMenu() throws Exception {
+        mockMvc.perform(get("/api/menu/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(4))
+                .andExpect(jsonPath("$[0].name").value("customers"))
+                .andExpect(jsonPath("$[1].name").value("departments"))
+                .andExpect(jsonPath("$[2].name").value("tmo"))
+                .andExpect(jsonPath("$[3].name").value("about"));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenRoleIsNotSupported() throws Exception {
+        mockMvc.perform(get("/api/menu/99"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Role with id '99' is not supported"));
+    }
 }

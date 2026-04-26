@@ -25,6 +25,11 @@ public class ApiExceptionHandler {
         return build(HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidRole(InvalidRoleException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> fields = ex.getBindingResult()
