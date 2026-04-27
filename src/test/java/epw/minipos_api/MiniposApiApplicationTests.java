@@ -91,9 +91,13 @@ class MiniposApiApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(4))
                 .andExpect(jsonPath("$[0].name").value("customers"))
+                .andExpect(jsonPath("$[0].component").value("CustomersPage"))
                 .andExpect(jsonPath("$[1].name").value("departments"))
+                .andExpect(jsonPath("$[1].component").value("DepartamentsPage"))
                 .andExpect(jsonPath("$[2].name").value("tmo"))
-                .andExpect(jsonPath("$[3].name").value("about"));
+                .andExpect(jsonPath("$[2].component").value("TestMenuOptionPage"))
+                .andExpect(jsonPath("$[3].name").value("about"))
+                .andExpect(jsonPath("$[3].component").value("AboutPage"));
     }
 
     @Test
